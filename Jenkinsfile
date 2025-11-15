@@ -22,6 +22,12 @@ pipeline {
                 echo '==========================================='
                 echo '🚀 CI/CD Pipeline Started'
                 echo '==========================================='
+		sh '''
+			echo "=== Java Version ==="
+			java -version
+			echo "=== Maven Version ==="
+			mvn -version
+		'''
                 echo "Build Number: ${BUILD_NUMBER}"
                 echo "Job Name: ${JOB_NAME}"
                 echo "Workspace: ${WORKSPACE}"
