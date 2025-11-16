@@ -13,6 +13,9 @@ pipeline {
         
         // Maven configuration
         MAVEN_OPTS = "-Dmaven.repo.local=.m2/repository"
+
+        JAVA_HOME = "/opt/java/openjdk"
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
     
     stages {
