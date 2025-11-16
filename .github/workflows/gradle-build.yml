@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        java: [ '25' ]
+        java: [ '21' ]
 
     steps:
       - name: Checkout code
