@@ -230,11 +230,11 @@ pipeline {
                         ${KUBECTL_BIN} apply -f k8s/service.yaml
                         
                         # Wait for rollout to complete
-                        ${KUBECTL_BIN} rollout status deployment/petclinic -n default --timeout=5m
+                        ${KUBECTL_BIN} rollout status deployment/petclinic -n petclinic-prod --timeout=5m
                         
                         # Verify deployment
-                        ${KUBECTL_BIN} get pods -n default -l app=petclinic
-                        ${KUBECTL_BIN} get svc -n default petclinic-service
+                        ${KUBECTL_BIN} get pods -n petclinic-prod -l app=petclinic
+                        ${KUBECTL_BIN} get svc -n petclinic-prod  petclinic-service
                         
                         echo "✅ Application deployed to Kubernetes successfully"
                     """
