@@ -11,10 +11,10 @@ pipeline {
         MAVEN_OPTS = "-Dmaven.repo.local=.m2/repository"
     }
     
-    tools {
-        maven 'Maven-3.9'
-        jdk 'JDK-17'
-    }
+  //  tools {
+    //    maven 'Maven-3.9'
+      // jdk 'JDK-17'
+   //  }
     
     stages {
         stage('1. Start') {
