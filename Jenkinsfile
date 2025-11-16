@@ -6,7 +6,7 @@ pipeline {
         DOCKER_IMAGE = "211172/spring-petclinic"
         DOCKER_TAG = "${BUILD_NUMBER}"
         DOCKER_CREDENTIALS_ID = "dockerhub-credentials"
-        // MODIFY THE STUFF
+        
         // Maven configuration
         MAVEN_OPTS = "-Dmaven.repo.local=.m2/repository"
     }
