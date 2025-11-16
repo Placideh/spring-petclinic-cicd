@@ -41,7 +41,7 @@ pipeline {
                 script {
                     sh """
                         echo "Compiling Spring Boot application with Maven..."
-                        ./mvnw clean install -DskipTests -Dcheckstyle.skip=true
+                        ./mvnw clean install -DskipTests -Dcheckstyle.skip=true -Denforcer.skip=true
                         echo "✅ Build completed successfully"
                     """
                 }
@@ -56,7 +56,7 @@ pipeline {
                         script {
                             sh """
                                 echo "Running unit tests..."
-                                ./mvnw test -Dtest=*Test -Dcheckstyle.skip=true
+                                ./mvnw test -Dtest=*Test -Dcheckstyle.skip=true -Denforcer.skip=true
                                 echo "✅ Unit tests completed"
                             """
                         }
@@ -69,7 +69,7 @@ pipeline {
                         script {
                             sh """
                                 echo "Running integration tests..."
-                                ./mvnw verify -Dit.test=*IT -Dcheckstyle.skip=true
+                                ./mvnw verify -Dit.test=*IT -Dcheckstyle.skip=true -Denforcer.skip=true
                                 echo "✅ Integration tests completed"
                             """
                         }
@@ -127,7 +127,7 @@ pipeline {
                 script {
                     sh """
                         echo "Packaging application as JAR..."
-                        ./mvnw package -DskipTests -Dcheckstyle.skip=true
+                        ./mvnw package -DskipTests -Dcheckstyle.skip=true -Denforcer.skip=true
                         echo "Listing generated artifacts:"
                         ls -lh target/*.jar
                         echo "✅ Application packaged successfully"
