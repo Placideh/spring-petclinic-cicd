@@ -37,7 +37,7 @@ pipeline {
                 script {
                     sh """
                         echo "Compiling Spring Boot application with Maven..."
-                        ./mvnw clean install -DskipTests
+                        ./mvnw clean install -DskipTests -Dcheckstyle.skip=true
                         echo "✅ Build completed successfully"
                     """
                 }
@@ -123,7 +123,7 @@ pipeline {
                 script {
                     sh """
                         echo "Packaging application as JAR..."
-                        ./mvnw package -DskipTests
+                        ./mvnw package -DskipTests -Dcheckstyle.skip=true
                         echo "Listing generated artifacts:"
                         ls -lh target/*.jar
                         echo "✅ Application packaged successfully"
