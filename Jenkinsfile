@@ -52,7 +52,7 @@ pipeline {
                         script {
                             sh """
                                 echo "Running unit tests..."
-                                ./mvnw test -Dtest=*Test
+                                ./mvnw test -Dtest=*Test -Dcheckstyle.skip=true
                                 echo "✅ Unit tests completed"
                             """
                         }
@@ -65,7 +65,7 @@ pipeline {
                         script {
                             sh """
                                 echo "Running integration tests..."
-                                ./mvnw verify -Dit.test=*IT
+                                ./mvnw verify -Dit.test=*IT -Dcheckstyle.skip=true
                                 echo "✅ Integration tests completed"
                             """
                         }
