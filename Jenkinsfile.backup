@@ -7,10 +7,6 @@ pipeline {
         DOCKER_TAG = "${BUILD_NUMBER}"
         DOCKER_CREDENTIALS_ID = "dockerhub-credentials"
         
-        // Tool paths
-        DOCKER_BIN = "/var/jenkins_home/bin/docker"
-        KUBECTL_BIN = "/var/jenkins_home/bin/kubectl"
-        
         // Maven configuration
         MAVEN_OPTS = "-Dmaven.repo.local=.m2/repository"
     }
@@ -144,8 +140,8 @@ pipeline {
                         script {
                             sh """
                                 echo "Building Docker image: ${DOCKER_IMAGE}:${DOCKER_TAG}"
-                                ${DOCKER_BIN} build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
-                                ${DOCKER_BIN} tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
+                                docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                                docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
                                 echo "✅ Docker image built successfully"
                             """
                         }
@@ -163,13 +159,13 @@ pipeline {
                             )]) {
                                 sh """
                                     echo "Logging into Docker Hub..."
-                                    echo \${DOCKER_PASS} | ${DOCKER_BIN} login -u \${DOCKER_USER} --password-stdin
+                                    echo \${DOCKER_PASS} | docker login -u \${DOCKER_USER} --password-stdin
                                     
                                     echo "Pushing image: ${DOCKER_IMAGE}:${DOCKER_TAG}"
-                                    ${DOCKER_BIN} push ${DOCKER_IMAGE}:${DOCKER_TAG}
+                                    docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
                                     
                                     echo "Pushing image: ${DOCKER_IMAGE}:latest"
-                                    ${DOCKER_BIN} push ${DOCKER_IMAGE}:latest
+                                    docker push ${DOCKER_IMAGE}:latest
                                     
                                     echo "✅ Images pushed to Docker Hub successfully"
                                 """
@@ -188,7 +184,7 @@ pipeline {
                         script {
                             sh """
                                 echo "Linting Dockerfile..."
-                                ${DOCKER_BIN} run --rm -i hadolint/hadolint < Dockerfile || true
+                                docker run --rm -i hadolint/hadolint < Dockerfile || true
                                 echo "✅ Dockerfile linting completed"
                             """
                         }
@@ -201,7 +197,7 @@ pipeline {
                         script {
                             sh """
                                 echo "Running Trivy security scan..."
-                                ${DOCKER_BIN} run --rm -v /var/run/docker.sock:/var/run/docker.sock \\
+                                docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \\
                                     aquasec/trivy:latest image --severity HIGH,CRITICAL \\
                                     ${DOCKER_IMAGE}:${DOCKER_TAG} || true
                                 echo "✅ Security scan completed"
@@ -223,15 +219,15 @@ pipeline {
                         sed -i 's|image:.*spring-petclinic.*|image: ${DOCKER_IMAGE}:${DOCKER_TAG}|g' k8s/deployment.yaml
                         
                         # Apply Kubernetes manifests
-                        ${KUBECTL_BIN} apply -f k8s/deployment.yaml
-                        ${KUBECTL_BIN} apply -f k8s/service.yaml
+                        kubectl apply -f k8s/deployment.yaml
+                        kubectl apply -f k8s/service.yaml
                         
                         # Wait for rollout to complete
-                        ${KUBECTL_BIN} rollout status deployment/petclinic -n default --timeout=5m
+                        kubectl rollout status deployment/petclinic -n default --timeout=5m
                         
                         # Verify deployment
-                        ${KUBECTL_BIN} get pods -n default -l app=petclinic
-                        ${KUBECTL_BIN} get svc -n default petclinic-service
+                        kubectl get pods -n default -l app=petclinic
+                        kubectl get svc -n default petclinic-service
                         
                         echo "✅ Application deployed to Kubernetes successfully"
                     """
@@ -245,14 +241,14 @@ pipeline {
             echo '========== Pipeline Cleanup =========='
             script {
                 // Logout from Docker
-                sh "${DOCKER_BIN} logout || true"
+                sh 'docker logout || true'
                 
                 // Clean up dangling images
-                sh """
+                sh '''
                     echo "Cleaning up dangling Docker images..."
-                    ${DOCKER_BIN} image prune -f || true
+                    docker image prune -f || true
                     echo "Cleanup completed"
-                """
+                '''
             }
         }
         
