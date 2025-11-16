@@ -9,7 +9,7 @@ spec:
   ports:
     - port: 80
       targetPort: 8080
-      nodePort: 30083  # Added explicit NodePort
+      nodePort: 30084  # Added explicit NodePort
   selector:
     app: petclinic
 ---
